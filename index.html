@@ -1,0 +1,2103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vitalis — Personal Health System</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f3ee;
+  --bg2:#eeeae4;
+  --surface:#ffffff;
+  --border:#e2ddd6;
+  --text:#1a1612;
+  --muted:#8a8278;
+  --accent:#2d6a4f;
+  --accent2:#52b788;
+  --accent3:#f4845f;
+  --accent4:#e76f51;
+  --warn:#e9c46a;
+  --blue:#457b9d;
+  --card:#fff;
+  --pill:#f0ebe4;
+  --shadow:0 2px 20px rgba(26,22,18,0.08);
+  --shadow-lg:0 8px 40px rgba(26,22,18,0.14);
+  --r:18px;
+  --r-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Cabinet Grotesk',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+/* SCREENS */
+.screen{display:none;min-height:100vh;animation:fadeIn 0.4s ease;}
+.screen.active{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-40px);}to{opacity:1;transform:translateX(0);}}
+@keyframes popIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:scale(1);}}
+
+/* ─── AUTH ─────────────────────────────────────────────────────── */
+#screen-auth{
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(145deg,#1a3c2e 0%,#2d6a4f 50%,#1a3c2e 100%);
+  padding:40px 20px;
+  position:relative;
+  overflow:hidden;
+}
+#screen-auth::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2352b788' fill-opacity='0.07'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.auth-blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(60px);
+  pointer-events:none;
+}
+.auth-blob1{width:400px;height:400px;background:rgba(82,183,136,0.2);top:-100px;right:-100px;}
+.auth-blob2{width:300px;height:300px;background:rgba(244,132,95,0.15);bottom:-50px;left:-80px;}
+
+.auth-logo{
+  font-family:'Clash Display',sans-serif;
+  font-size:2.6rem;
+  font-weight:700;
+  color:#fff;
+  margin-bottom:8px;
+  position:relative;
+  z-index:1;
+}
+.auth-logo span{color:#52b788;}
+.auth-tagline{
+  font-size:0.85rem;
+  color:rgba(255,255,255,0.55);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:48px;
+  position:relative;z-index:1;
+}
+
+.auth-card{
+  background:rgba(255,255,255,0.97);
+  border-radius:28px;
+  padding:40px;
+  width:100%;
+  max-width:420px;
+  box-shadow:0 24px 64px rgba(0,0,0,0.3);
+  position:relative;z-index:1;
+}
+.auth-tabs{
+  display:flex;
+  background:var(--pill);
+  border-radius:12px;
+  padding:4px;
+  margin-bottom:32px;
+}
+.auth-tab{
+  flex:1;text-align:center;padding:10px;border-radius:9px;
+  font-size:0.85rem;font-weight:600;cursor:pointer;
+  transition:all 0.25s;color:var(--muted);
+}
+.auth-tab.active{background:#fff;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+
+.form-group{margin-bottom:18px;}
+.form-label{font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+.form-input{
+  width:100%;padding:14px 16px;
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:0.95rem;
+  color:var(--text);
+  background:#fff;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  outline:none;
+}
+.form-input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(82,183,136,0.15);}
+.btn-auth{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;border:none;border-radius:12px;
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:1rem;font-weight:700;cursor:pointer;
+  transition:all 0.25s;margin-top:8px;
+  box-shadow:0 4px 20px rgba(45,106,79,0.3);
+}
+.btn-auth:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,106,79,0.4);}
+.auth-divider{text-align:center;color:var(--muted);font-size:0.75rem;margin:16px 0;position:relative;}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border);}
+.auth-divider::before{left:0;} .auth-divider::after{right:0;}
+
+/* ─── ONBOARDING ────────────────────────────────────────────────── */
+#screen-onboard{
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  background:var(--bg);
+  position:relative;
+  min-height:100vh;
+}
+.onboard-progress{
+  display:flex;gap:8px;margin-bottom:48px;
+}
+.progress-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--border);transition:all 0.3s;
+}
+.progress-dot.active{background:var(--accent);width:24px;border-radius:4px;}
+.progress-dot.done{background:var(--accent2);}
+
+.onboard-step{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  animation:popIn 0.35s ease;
+  width:100%;max-width:480px;
+}
+.onboard-step.active{display:flex;}
+
+.step-icon{
+  width:80px;height:80px;
+  border-radius:24px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;margin-bottom:24px;
+  box-shadow:0 8px 24px rgba(45,106,79,0.25);
+}
+.step-title{
+  font-family:'Clash Display',sans-serif;
+  font-size:2rem;font-weight:600;
+  margin-bottom:8px;color:var(--text);
+}
+.step-sub{
+  font-size:0.9rem;color:var(--muted);
+  margin-bottom:36px;line-height:1.5;
+}
+
+/* Big input slider area */
+.big-input-area{
+  background:var(--surface);
+  border-radius:24px;
+  padding:36px;
+  width:100%;
+  box-shadow:var(--shadow);
+  margin-bottom:24px;
+}
+.big-number{
+  font-family:'Clash Display',sans-serif;
+  font-size:5rem;font-weight:700;
+  color:var(--accent);
+  line-height:1;
+  display:block;
+  text-align:center;
+  margin-bottom:8px;
+}
+.big-unit{
+  font-size:1rem;color:var(--muted);
+  display:block;text-align:center;
+  margin-bottom:28px;
+}
+.range-slider{
+  -webkit-appearance:none;
+  width:100%;height:6px;
+  border-radius:3px;
+  background:var(--border);
+  outline:none;cursor:pointer;
+}
+.range-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:24px;height:24px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 4px 12px rgba(45,106,79,0.35);
+  cursor:pointer;
+  transition:transform 0.15s;
+}
+.range-slider::-webkit-slider-thumb:hover{transform:scale(1.15);}
+.range-labels{
+  display:flex;justify-content:space-between;
+  font-size:0.7rem;color:var(--muted);margin-top:8px;
+}
+
+/* Option grid */
+.option-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;width:100%;margin-bottom:24px;
+}
+.option-card{
+  background:var(--surface);border:2px solid var(--border);
+  border-radius:16px;padding:20px 16px;
+  text-align:center;cursor:pointer;
+  transition:all 0.2s;
+}
+.option-card:hover{border-color:var(--accent2);transform:translateY(-2px);}
+.option-card.selected{border-color:var(--accent);background:rgba(45,106,79,0.06);}
+.option-card .oc-icon{font-size:1.8rem;margin-bottom:8px;display:block;}
+.option-card .oc-label{font-size:0.85rem;font-weight:600;}
+.option-card .oc-sub{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+
+/* Tags multi-select */
+.tag-grid{
+  display:flex;flex-wrap:wrap;gap:10px;
+  width:100%;margin-bottom:24px;justify-content:center;
+}
+.tag-btn{
+  padding:10px 18px;border-radius:100px;
+  border:1.5px solid var(--border);
+  background:var(--surface);
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:0.82rem;font-weight:500;cursor:pointer;
+  transition:all 0.2s;
+}
+.tag-btn:hover{border-color:var(--accent2);}
+.tag-btn.selected{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+.btn-next{
+  padding:16px 48px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;border:none;border-radius:100px;
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:1rem;font-weight:700;cursor:pointer;
+  transition:all 0.25s;
+  box-shadow:0 4px 20px rgba(45,106,79,0.3);
+}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(45,106,79,0.4);}
+.btn-back{
+  background:none;border:none;color:var(--muted);
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:0.85rem;cursor:pointer;padding:10px 20px;
+  margin-top:12px;transition:color 0.2s;
+}
+.btn-back:hover{color:var(--text);}
+
+/* ─── MAIN APP ──────────────────────────────────────────────────── */
+#screen-app{
+  flex-direction:column;
+  background:var(--bg);
+  min-height:100vh;
+  padding-bottom:90px;
+}
+
+/* Top bar */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px 0;
+  position:sticky;top:0;
+  background:var(--bg);
+  z-index:50;
+}
+.topbar-logo{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.4rem;font-weight:700;color:var(--text);
+}
+.topbar-logo span{color:var(--accent2);}
+.topbar-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:0.9rem;cursor:pointer;
+}
+
+/* Tab navigation */
+.tab-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(247,243,238,0.95);
+  backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);
+  display:flex;z-index:100;
+  padding:8px 0 max(8px,env(safe-area-inset-bottom));
+}
+.tab-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:4px;padding:8px;cursor:pointer;
+  transition:all 0.2s;
+}
+.tab-icon{font-size:1.4rem;transition:transform 0.2s;}
+.tab-label{font-size:0.58rem;font-weight:600;letter-spacing:0.5px;color:var(--muted);text-transform:uppercase;}
+.tab-item.active .tab-icon{transform:translateY(-3px);}
+.tab-item.active .tab-label{color:var(--accent);}
+
+/* Content panels */
+.tab-panel{display:none;padding:20px 20px 0;}
+.tab-panel.active{display:block;animation:fadeIn 0.3s ease;}
+
+/* ─── DASHBOARD ─────────────────────────────────────────────────── */
+.greeting{
+  font-family:'Instrument Serif',serif;
+  font-size:1.8rem;
+  color:var(--text);
+  margin-bottom:4px;
+}
+.greeting span{color:var(--accent);}
+.greeting-sub{font-size:0.82rem;color:var(--muted);margin-bottom:24px;}
+
+/* Health score ring */
+.health-hero{
+  background:linear-gradient(135deg,#1a3c2e,#2d6a4f);
+  border-radius:28px;
+  padding:28px;
+  display:flex;
+  align-items:center;
+  gap:24px;
+  margin-bottom:20px;
+  position:relative;
+  overflow:hidden;
+}
+.health-hero::before{
+  content:'';position:absolute;
+  width:200px;height:200px;
+  border-radius:50%;
+  background:rgba(82,183,136,0.15);
+  right:-40px;top:-40px;
+}
+.health-ring-wrap{position:relative;width:110px;height:110px;flex-shrink:0;}
+.health-ring-wrap svg{transform:rotate(-90deg);}
+.ring-track{fill:none;stroke:rgba(255,255,255,0.15);stroke-width:8;}
+.ring-fill{
+  fill:none;stroke:#52b788;stroke-width:8;
+  stroke-linecap:round;
+  stroke-dasharray:283;
+  stroke-dashoffset:283;
+  transition:stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);
+}
+.ring-score{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.ring-num{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.8rem;font-weight:700;color:#fff;line-height:1;
+}
+.ring-label{font-size:0.6rem;color:rgba(255,255,255,0.6);letter-spacing:1px;text-transform:uppercase;}
+.health-hero-info{flex:1;}
+.health-hero-title{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.3rem;color:#fff;margin-bottom:6px;
+}
+.health-hero-sub{font-size:0.78rem;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:14px;}
+.health-level-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,0.15);
+  border-radius:100px;padding:6px 14px;
+  font-size:0.72rem;font-weight:700;color:#fff;
+  backdrop-filter:blur(8px);
+}
+
+/* Quick stats */
+.stats-row{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;margin-bottom:20px;
+}
+.stat-card{
+  background:var(--surface);border-radius:20px;
+  padding:18px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:attr(data-emoji);
+  position:absolute;right:12px;top:10px;
+  font-size:1.6rem;opacity:0.2;
+}
+.stat-label{font-size:0.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.stat-value{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.6rem;font-weight:700;color:var(--text);
+  line-height:1;
+}
+.stat-unit{font-size:0.75rem;color:var(--muted);margin-left:2px;}
+.stat-sub{font-size:0.7rem;color:var(--muted);margin-top:4px;}
+.stat-bar{height:3px;background:var(--border);border-radius:3px;margin-top:10px;overflow:hidden;}
+.stat-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1s ease;}
+
+/* Reminders */
+.section-title{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.1rem;font-weight:600;
+  color:var(--text);margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.section-title a{font-size:0.72rem;color:var(--accent2);font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;}
+
+.reminder-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.reminder-item{
+  background:var(--surface);border-radius:16px;
+  padding:14px 16px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:var(--shadow);
+  transition:transform 0.2s;
+}
+.reminder-item:hover{transform:translateX(3px);}
+.reminder-icon-wrap{
+  width:44px;height:44px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;
+}
+.reminder-info{flex:1;}
+.reminder-name{font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:2px;}
+.reminder-time{font-size:0.72rem;color:var(--muted);}
+.reminder-status{
+  width:28px;height:28px;border-radius:50%;
+  border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all 0.2s;
+}
+.reminder-status.done{background:var(--accent2);border-color:var(--accent2);color:#fff;}
+
+/* ─── MEDICATIONS ───────────────────────────────────────────────── */
+.med-hero{
+  background:linear-gradient(135deg,#1a2744,#457b9d);
+  border-radius:28px;padding:24px;
+  margin-bottom:20px;color:#fff;
+}
+.med-hero-title{font-family:'Clash Display',sans-serif;font-size:1.2rem;margin-bottom:4px;}
+.med-hero-sub{font-size:0.78rem;opacity:0.7;margin-bottom:16px;}
+.med-progress-bar{
+  height:6px;background:rgba(255,255,255,0.2);
+  border-radius:3px;overflow:hidden;
+}
+.med-progress-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,#74c0fc,#a9d6e5);
+  transition:width 0.8s ease;
+}
+.med-progress-label{font-size:0.7rem;opacity:0.7;margin-top:8px;}
+
+.med-list{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.med-card{
+  background:var(--surface);border-radius:20px;
+  padding:18px;box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:16px;
+}
+.med-pill-icon{
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;flex-shrink:0;
+}
+.med-info{flex:1;}
+.med-name{font-size:0.92rem;font-weight:700;margin-bottom:2px;}
+.med-details{font-size:0.72rem;color:var(--muted);}
+.med-times{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.med-time-chip{
+  padding:3px 10px;border-radius:100px;
+  font-size:0.65rem;font-weight:600;
+  background:var(--pill);color:var(--muted);
+  letter-spacing:0.5px;
+}
+.med-time-chip.taken{background:rgba(82,183,136,0.15);color:var(--accent);}
+.med-action{
+  width:36px;height:36px;border-radius:50%;
+  border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all 0.2s;font-size:1rem;
+}
+.med-action.taken{background:var(--accent2);border-color:var(--accent2);color:#fff;}
+
+.add-med-btn{
+  width:100%;padding:16px;
+  background:var(--surface);
+  border:2px dashed var(--border);
+  border-radius:16px;
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:0.88rem;color:var(--muted);
+  cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.add-med-btn:hover{border-color:var(--accent2);color:var(--accent);}
+
+/* ─── EXERCISE ──────────────────────────────────────────────────── */
+.exercise-hero{
+  background:linear-gradient(135deg,#3d1a0e,#e76f51);
+  border-radius:28px;padding:24px;
+  margin-bottom:20px;color:#fff;position:relative;overflow:hidden;
+}
+.exercise-hero::after{
+  content:'🏃';position:absolute;right:20px;bottom:-10px;
+  font-size:5rem;opacity:0.2;
+}
+.exercise-hero-title{font-family:'Clash Display',sans-serif;font-size:1.2rem;margin-bottom:4px;}
+.exercise-hero-sub{font-size:0.78rem;opacity:0.7;}
+
+.exercise-cats{
+  display:flex;gap:10px;overflow-x:auto;
+  padding-bottom:4px;margin-bottom:20px;
+  scrollbar-width:none;
+}
+.exercise-cats::-webkit-scrollbar{display:none;}
+.ex-cat{
+  padding:8px 18px;border-radius:100px;
+  border:1.5px solid var(--border);
+  background:var(--surface);
+  font-size:0.78rem;font-weight:600;
+  cursor:pointer;white-space:nowrap;transition:all 0.2s;
+}
+.ex-cat.active{background:var(--accent3);color:#fff;border-color:var(--accent3);}
+
+.exercise-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:14px;margin-bottom:20px;
+}
+.ex-card{
+  background:var(--surface);border-radius:20px;
+  padding:20px;box-shadow:var(--shadow);
+  cursor:pointer;transition:all 0.25s;
+  position:relative;overflow:hidden;
+}
+.ex-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.ex-card::before{
+  content:attr(data-emoji);
+  position:absolute;right:10px;top:10px;
+  font-size:2rem;opacity:0.15;
+}
+.ex-card-type{
+  font-size:0.58rem;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px;
+}
+.ex-card-name{font-family:'Clash Display',sans-serif;font-size:1rem;font-weight:600;margin-bottom:4px;}
+.ex-card-meta{font-size:0.72rem;color:var(--muted);margin-bottom:12px;}
+.ex-card-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.ex-tag{
+  padding:3px 8px;border-radius:6px;font-size:0.6rem;font-weight:600;
+  background:var(--pill);color:var(--muted);
+}
+.ex-tag.intensity-low{background:rgba(82,183,136,0.15);color:var(--accent);}
+.ex-tag.intensity-med{background:rgba(233,196,106,0.2);color:#b08800;}
+.ex-tag.intensity-high{background:rgba(231,111,81,0.15);color:var(--accent4);}
+
+/* ─── ANALYSIS ──────────────────────────────────────────────────── */
+.analysis-hero{
+  background:linear-gradient(135deg,#241434,#7b2d8b);
+  border-radius:28px;padding:24px;
+  margin-bottom:20px;color:#fff;
+}
+.chart-area{
+  background:var(--surface);border-radius:20px;
+  padding:20px;box-shadow:var(--shadow);
+  margin-bottom:16px;
+}
+.chart-title{font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.mini-bars{
+  display:flex;align-items:flex-end;gap:6px;height:80px;
+}
+.mini-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.mini-bar{
+  width:100%;border-radius:4px 4px 0 0;
+  background:linear-gradient(to top,var(--accent),var(--accent2));
+  transition:height 0.8s cubic-bezier(0.4,0,0.2,1);
+  min-height:4px;
+}
+.mini-bar-label{font-size:0.55rem;color:var(--muted);}
+
+.insights-list{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.insight-card{
+  background:var(--surface);border-radius:16px;
+  padding:16px;box-shadow:var(--shadow);
+  display:flex;gap:14px;align-items:flex-start;
+}
+.insight-icon{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.insight-title{font-size:0.88rem;font-weight:700;margin-bottom:3px;}
+.insight-desc{font-size:0.75rem;color:var(--muted);line-height:1.5;}
+
+/* ─── WATER ─────────────────────────────────────────────────────── */
+.water-section{
+  background:linear-gradient(135deg,#0d3251,#1a6b9a);
+  border-radius:28px;padding:28px;
+  text-align:center;color:#fff;
+  margin-bottom:20px;position:relative;overflow:hidden;
+}
+.water-drops{
+  display:flex;justify-content:center;gap:12px;
+  flex-wrap:wrap;margin:20px 0;
+}
+.water-drop{
+  width:44px;height:44px;
+  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+  border:2px solid rgba(255,255,255,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.9rem;cursor:pointer;
+  transition:all 0.2s;
+}
+.water-drop.filled{
+  background:rgba(116,192,252,0.5);
+  border-color:rgba(116,192,252,0.8);
+}
+.water-drop:hover{transform:scale(1.1);}
+
+/* ─── MODALS ────────────────────────────────────────────────────── */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(26,22,18,0.6);
+  backdrop-filter:blur(6px);
+  z-index:200;display:none;
+  align-items:flex-end;justify-content:center;
+  padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:var(--surface);
+  border-radius:28px 28px 20px 20px;
+  padding:32px 28px;
+  width:100%;max-width:480px;
+  animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  max-height:80vh;overflow-y:auto;
+}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-handle{
+  width:36px;height:4px;background:var(--border);
+  border-radius:2px;margin:0 auto 20px;
+}
+.modal-title-big{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.4rem;font-weight:600;margin-bottom:20px;
+}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#1a1612;color:#fff;
+  padding:12px 24px;border-radius:100px;
+  font-size:0.82rem;font-weight:500;
+  z-index:300;opacity:0;transition:all 0.3s;
+  white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ─── PROFILE SIDE PANEL ────────────────────────────────────────── */
+.profile-overlay{
+  position:fixed;inset:0;
+  background:rgba(26,22,18,0.5);
+  backdrop-filter:blur(4px);
+  z-index:500;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.3s;
+}
+.profile-overlay.open{opacity:1;pointer-events:all;}
+.profile-panel{
+  position:fixed;top:0;right:0;bottom:0;
+  width:min(360px,92vw);
+  background:var(--surface);
+  z-index:501;
+  transform:translateX(100%);
+  transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
+  overflow-y:auto;
+  border-radius:28px 0 0 28px;
+  box-shadow:var(--shadow-lg);
+  display:flex;flex-direction:column;
+}
+.profile-panel.open{transform:translateX(0);}
+
+.profile-header{
+  background:linear-gradient(135deg,#1a3c2e,#2d6a4f);
+  padding:48px 28px 28px;
+  position:relative;
+  flex-shrink:0;
+}
+.profile-close{
+  position:absolute;top:16px;left:16px;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;color:#fff;
+  transition:background 0.2s;
+}
+.profile-close:hover{background:rgba(255,255,255,0.25);}
+.profile-avatar-big{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent2),#a8edcb);
+  display:flex;align-items:center;justify-content:center;
+  color:#1a3c2e;font-weight:800;font-size:1.8rem;
+  margin-bottom:14px;
+  border:3px solid rgba(255,255,255,0.3);
+}
+.profile-name-big{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.3rem;font-weight:600;color:#fff;
+  margin-bottom:2px;
+}
+.profile-email-big{font-size:0.78rem;color:rgba(255,255,255,0.6);}
+.profile-badges{
+  display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;
+}
+.profile-badge{
+  padding:4px 12px;border-radius:100px;
+  background:rgba(255,255,255,0.15);
+  font-size:0.68rem;font-weight:600;color:#fff;
+  backdrop-filter:blur(4px);
+}
+
+.profile-body{flex:1;padding:20px;}
+.profile-section-label{
+  font-size:0.62rem;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);
+  margin:20px 0 10px;
+}
+.profile-row{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 16px;border-radius:14px;
+  cursor:pointer;transition:background 0.2s;
+  margin-bottom:4px;
+}
+.profile-row:hover{background:var(--pill);}
+.profile-row-icon{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.profile-row-text{flex:1;}
+.profile-row-title{font-size:0.88rem;font-weight:600;margin-bottom:1px;}
+.profile-row-sub{font-size:0.7rem;color:var(--muted);}
+.profile-row-arrow{color:var(--muted);font-size:0.8rem;}
+.profile-row-toggle{
+  width:44px;height:24px;border-radius:12px;
+  background:var(--border);cursor:pointer;
+  position:relative;transition:background 0.25s;
+  border:none;flex-shrink:0;
+}
+.profile-row-toggle.on{background:var(--accent);}
+.profile-row-toggle::after{
+  content:'';position:absolute;
+  top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;transition:left 0.25s;
+  box-shadow:0 1px 4px rgba(0,0,0,0.2);
+}
+.profile-row-toggle.on::after{left:23px;}
+
+.profile-stat-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:10px;margin-bottom:16px;
+}
+.profile-stat-mini{
+  background:var(--pill);border-radius:12px;
+  padding:12px 10px;text-align:center;
+}
+.profile-stat-mini-val{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.1rem;font-weight:700;color:var(--text);
+}
+.profile-stat-mini-lbl{font-size:0.58rem;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
+
+.profile-divider{height:1px;background:var(--border);margin:8px 0;}
+
+.btn-logout{
+  width:100%;padding:14px;margin-top:8px;
+  background:linear-gradient(135deg,#c62828,#e53935);
+  color:#fff;border:none;border-radius:12px;
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:0.95rem;font-weight:700;cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-logout:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(198,40,40,0.35);}
+.btn-switch-account{
+  width:100%;padding:14px;margin-top:8px;
+  background:var(--pill);
+  color:var(--text);border:none;border-radius:12px;
+  font-family:'Cabinet Grotesk',sans-serif;
+  font-size:0.95rem;font-weight:700;cursor:pointer;
+  transition:all 0.2s;border:1.5px solid var(--border);
+}
+.btn-switch-account:hover{background:var(--bg2);}
+
+/* ─── MOOD TRACKER ──────────────────────────────────────────────── */
+.mood-section{
+  background:var(--surface);border-radius:20px;
+  padding:20px;box-shadow:var(--shadow);
+  margin-bottom:20px;
+}
+.mood-emoji-row{
+  display:flex;justify-content:space-around;margin:12px 0;
+}
+.mood-btn{
+  width:52px;height:52px;border-radius:50%;
+  border:2px solid var(--border);
+  background:var(--pill);
+  font-size:1.6rem;cursor:pointer;
+  transition:all 0.2s;display:flex;align-items:center;justify-content:center;
+}
+.mood-btn:hover{transform:scale(1.15);border-color:var(--accent2);}
+.mood-btn.selected{border-color:var(--accent);background:rgba(45,106,79,0.1);transform:scale(1.15);}
+
+/* ─── STREAK CARD ───────────────────────────────────────────────── */
+.streak-card{
+  background:linear-gradient(135deg,#e76f51,#f4845f);
+  border-radius:20px;padding:20px;
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:20px;color:#fff;
+  box-shadow:0 4px 20px rgba(231,111,81,0.3);
+}
+.streak-flame{font-size:2.5rem;}
+.streak-info{flex:1;}
+.streak-num{
+  font-family:'Clash Display',sans-serif;
+  font-size:2rem;font-weight:700;line-height:1;
+}
+.streak-label{font-size:0.78rem;opacity:0.85;margin-top:2px;}
+
+/* ─── UTILITIES ─────────────────────────────────────────────────── */
+.mt-4{margin-top:16px;}
+.mb-4{margin-bottom:16px;}
+.text-accent{color:var(--accent);}
+.text-muted{color:var(--muted);}
+.font-bold{font-weight:700;}
+.flex-between{display:flex;align-items:center;justify-content:space-between;}
+
+/* Responsive */
+@media(max-width:380px){
+  .exercise-grid,.stats-row{grid-template-columns:1fr;}
+  .big-number{font-size:4rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ AUTH SCREEN ══════════════ -->
+<div id="screen-auth" class="screen active">
+  <div class="auth-blob auth-blob1"></div>
+  <div class="auth-blob auth-blob2"></div>
+
+  <div class="auth-logo">Vita<span>lis</span></div>
+  <div class="auth-tagline">Your personal health companion</div>
+
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchAuthTab('login')">Sign In</div>
+      <div class="auth-tab" onclick="switchAuthTab('signup')">Create Account</div>
+    </div>
+
+    <!-- Login -->
+    <div id="auth-login">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="login-email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="login-password" placeholder="••••••••">
+      </div>
+      <button class="btn-auth" onclick="doLogin()">Sign In →</button>
+      <div class="auth-divider">or</div>
+      <button class="btn-auth" style="background:linear-gradient(135deg,#457b9d,#74c0fc);" onclick="demoLogin()">Try Demo Account</button>
+    </div>
+
+    <!-- Signup -->
+    <div id="auth-signup" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" type="text" id="signup-name" placeholder="Alex Johnson">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="signup-email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="signup-password" placeholder="••••••••">
+      </div>
+      <button class="btn-auth" onclick="doSignup()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ONBOARDING SCREEN ══════════════ -->
+<div id="screen-onboard" class="screen">
+  <div class="onboard-progress" id="onboard-progress"></div>
+
+  <!-- Step 1: Age -->
+  <div class="onboard-step active" id="step-1">
+    <div class="step-icon">🎂</div>
+    <div class="step-title">How old are you?</div>
+    <div class="step-sub">Your age helps us personalize health targets and recommendations</div>
+    <div class="big-input-area">
+      <span class="big-number" id="age-display">25</span>
+      <span class="big-unit">years old</span>
+      <input type="range" class="range-slider" id="age-slider" min="10" max="100" value="25" oninput="document.getElementById('age-display').textContent=this.value; userData.age=parseInt(this.value);">
+      <div class="range-labels"><span>10</span><span>55</span><span>100</span></div>
+    </div>
+    <button class="btn-next" onclick="nextStep(2)">Continue →</button>
+  </div>
+
+  <!-- Step 2: Height -->
+  <div class="onboard-step" id="step-2">
+    <div class="step-icon">📏</div>
+    <div class="step-title">Your height?</div>
+    <div class="step-sub">We'll use this to calculate your BMI and ideal weight range</div>
+    <div class="big-input-area">
+      <span class="big-number" id="height-display">170</span>
+      <span class="big-unit">centimeters</span>
+      <input type="range" class="range-slider" id="height-slider" min="120" max="220" value="170" oninput="document.getElementById('height-display').textContent=this.value; userData.height=parseInt(this.value);">
+      <div class="range-labels"><span>120 cm</span><span>170 cm</span><span>220 cm</span></div>
+    </div>
+    <button class="btn-next" onclick="nextStep(3)">Continue →</button>
+    <button class="btn-back" onclick="nextStep(1)">← Back</button>
+  </div>
+
+  <!-- Step 3: Weight -->
+  <div class="onboard-step" id="step-3">
+    <div class="step-icon">⚖️</div>
+    <div class="step-title">Current weight?</div>
+    <div class="step-sub">This helps track changes and set personalized fitness goals</div>
+    <div class="big-input-area">
+      <span class="big-number" id="weight-display">70</span>
+      <span class="big-unit">kilograms</span>
+      <input type="range" class="range-slider" id="weight-slider" min="30" max="200" value="70" oninput="document.getElementById('weight-display').textContent=this.value; userData.weight=parseInt(this.value);">
+      <div class="range-labels"><span>30 kg</span><span>70 kg</span><span>200 kg</span></div>
+    </div>
+    <button class="btn-next" onclick="nextStep(4)">Continue →</button>
+    <button class="btn-back" onclick="nextStep(2)">← Back</button>
+  </div>
+
+  <!-- Step 4: Activity level -->
+  <div class="onboard-step" id="step-4">
+    <div class="step-icon">🏃</div>
+    <div class="step-title">Activity level?</div>
+    <div class="step-sub">How active are you on a typical week?</div>
+    <div class="option-grid">
+      <div class="option-card" onclick="selectOption('activity','sedentary',this)">
+        <span class="oc-icon">🛋️</span>
+        <div class="oc-label">Sedentary</div>
+        <div class="oc-sub">Little or no exercise</div>
+      </div>
+      <div class="option-card" onclick="selectOption('activity','light',this)">
+        <span class="oc-icon">🚶</span>
+        <div class="oc-label">Lightly Active</div>
+        <div class="oc-sub">1–3 days/week</div>
+      </div>
+      <div class="option-card" onclick="selectOption('activity','moderate',this)">
+        <span class="oc-icon">🏋️</span>
+        <div class="oc-label">Moderate</div>
+        <div class="oc-sub">3–5 days/week</div>
+      </div>
+      <div class="option-card" onclick="selectOption('activity','active',this)">
+        <span class="oc-icon">⚡</span>
+        <div class="oc-label">Very Active</div>
+        <div class="oc-sub">Daily intense</div>
+      </div>
+    </div>
+    <button class="btn-next" onclick="nextStep(5)">Continue →</button>
+    <button class="btn-back" onclick="nextStep(3)">← Back</button>
+  </div>
+
+  <!-- Step 5: Health goals -->
+  <div class="onboard-step" id="step-5">
+    <div class="step-icon">🎯</div>
+    <div class="step-title">Your health goals?</div>
+    <div class="step-sub">Select all that apply — we'll tailor everything to you</div>
+    <div class="tag-grid">
+      <button class="tag-btn" onclick="toggleTag('goals','lose_weight',this)">⚖️ Lose Weight</button>
+      <button class="tag-btn" onclick="toggleTag('goals','build_muscle',this)">💪 Build Muscle</button>
+      <button class="tag-btn" onclick="toggleTag('goals','more_energy',this)">⚡ More Energy</button>
+      <button class="tag-btn" onclick="toggleTag('goals','better_sleep',this)">😴 Better Sleep</button>
+      <button class="tag-btn" onclick="toggleTag('goals','reduce_stress',this)">🧘 Reduce Stress</button>
+      <button class="tag-btn" onclick="toggleTag('goals','manage_condition',this)">🏥 Manage Condition</button>
+      <button class="tag-btn" onclick="toggleTag('goals','flexibility',this)">🤸 Flexibility</button>
+      <button class="tag-btn" onclick="toggleTag('goals','heart_health',this)">❤️ Heart Health</button>
+    </div>
+    <button class="btn-next" onclick="nextStep(6)">Continue →</button>
+    <button class="btn-back" onclick="nextStep(4)">← Back</button>
+  </div>
+
+  <!-- Step 6: Medical conditions -->
+  <div class="onboard-step" id="step-6">
+    <div class="step-icon">🏥</div>
+    <div class="step-title">Any conditions?</div>
+    <div class="step-sub">This helps us give safe, personalized recommendations</div>
+    <div class="tag-grid">
+      <button class="tag-btn" onclick="toggleTag('conditions','none',this)">✅ None</button>
+      <button class="tag-btn" onclick="toggleTag('conditions','diabetes',this)">🩸 Diabetes</button>
+      <button class="tag-btn" onclick="toggleTag('conditions','hypertension',this)">💗 Hypertension</button>
+      <button class="tag-btn" onclick="toggleTag('conditions','heart',this)">❤️ Heart Issue</button>
+      <button class="tag-btn" onclick="toggleTag('conditions','asthma',this)">🫁 Asthma</button>
+      <button class="tag-btn" onclick="toggleTag('conditions','arthritis',this)">🦴 Arthritis</button>
+      <button class="tag-btn" onclick="toggleTag('conditions','anxiety',this)">🧠 Anxiety</button>
+      <button class="tag-btn" onclick="toggleTag('conditions','back_pain',this)">🔙 Back Pain</button>
+    </div>
+    <button class="btn-next" onclick="nextStep(7)">Continue →</button>
+    <button class="btn-back" onclick="nextStep(5)">← Back</button>
+  </div>
+
+  <!-- Step 7: Sleep & water -->
+  <div class="onboard-step" id="step-7">
+    <div class="step-icon">💧</div>
+    <div class="step-title">Daily habits?</div>
+    <div class="step-sub">Sleep hours and daily water intake</div>
+    <div class="big-input-area" style="margin-bottom:16px;">
+      <span class="big-number" id="sleep-display">7</span>
+      <span class="big-unit">hours of sleep per night</span>
+      <input type="range" class="range-slider" min="4" max="12" value="7" oninput="document.getElementById('sleep-display').textContent=this.value; userData.sleep=parseInt(this.value);">
+      <div class="range-labels"><span>4 hrs</span><span>8 hrs</span><span>12 hrs</span></div>
+    </div>
+    <div class="big-input-area">
+      <span class="big-number" id="water-goal-display">8</span>
+      <span class="big-unit">glasses of water daily goal</span>
+      <input type="range" class="range-slider" min="4" max="16" value="8" oninput="document.getElementById('water-goal-display').textContent=this.value; userData.waterGoal=parseInt(this.value);">
+      <div class="range-labels"><span>4</span><span>8</span><span>16</span></div>
+    </div>
+    <button class="btn-next" onclick="finishOnboarding()">Let's Go! 🚀</button>
+    <button class="btn-back" onclick="nextStep(6)">← Back</button>
+  </div>
+</div>
+
+<!-- ══════════════ MAIN APP SCREEN ══════════════ -->
+<div id="screen-app" class="screen">
+  <div class="topbar">
+    <div class="topbar-logo">Vita<span>lis</span></div>
+    <div class="topbar-avatar" id="user-avatar" onclick="openProfilePanel()" title="Your profile">A</div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="tab-panel active" id="panel-home">
+    <div class="greeting">Good <span id="greeting-time">morning</span>,<br><span id="user-name-greeting">Alex</span> 👋</div>
+    <div class="greeting-sub" id="greeting-date">Saturday, February 21</div>
+
+    <!-- Health score ring -->
+    <div class="health-hero">
+      <div class="health-ring-wrap">
+        <svg width="110" height="110" viewBox="0 0 110 110">
+          <circle class="ring-track" cx="55" cy="55" r="45"/>
+          <circle class="ring-fill" id="health-ring" cx="55" cy="55" r="45"/>
+        </svg>
+        <div class="ring-score">
+          <span class="ring-num" id="health-score-num">--</span>
+          <span class="ring-label">Score</span>
+        </div>
+      </div>
+      <div class="health-hero-info">
+        <div class="health-hero-title">Health Overview</div>
+        <div class="health-hero-sub" id="health-hero-desc">Calculating your personal health score based on your vitals and activity…</div>
+        <div class="health-level-badge" id="health-level-badge">🟡 Loading…</div>
+      </div>
+    </div>
+
+    <!-- Quick stats -->
+    <div class="stats-row">
+      <div class="stat-card" data-emoji="⚖️">
+        <div class="stat-label">BMI</div>
+        <div class="stat-value" id="bmi-val">--<span class="stat-unit"></span></div>
+        <div class="stat-sub" id="bmi-label">Calculating...</div>
+        <div class="stat-bar"><div class="stat-fill" id="bmi-bar" style="width:0%;background:linear-gradient(90deg,#52b788,#74c0fc);"></div></div>
+      </div>
+      <div class="stat-card" data-emoji="💧">
+        <div class="stat-label">Water Today</div>
+        <div class="stat-value" id="water-stat-val">0<span class="stat-unit"> / 8 gl</span></div>
+        <div class="stat-sub" id="water-stat-sub">Keep drinking!</div>
+        <div class="stat-bar"><div class="stat-fill" id="water-bar" style="width:0%;background:linear-gradient(90deg,#1a6b9a,#74c0fc);"></div></div>
+      </div>
+      <div class="stat-card" data-emoji="💊">
+        <div class="stat-label">Medications</div>
+        <div class="stat-value" id="med-stat-val">0<span class="stat-unit"> taken</span></div>
+        <div class="stat-sub" id="med-stat-sub">Today's doses</div>
+        <div class="stat-bar"><div class="stat-fill" id="med-bar" style="width:0%;background:linear-gradient(90deg,#457b9d,#a9d6e5);"></div></div>
+      </div>
+      <div class="stat-card" data-emoji="😴">
+        <div class="stat-label">Sleep</div>
+        <div class="stat-value" id="sleep-stat-val">--<span class="stat-unit"> hrs</span></div>
+        <div class="stat-sub" id="sleep-stat-sub">Last night</div>
+        <div class="stat-bar"><div class="stat-fill" id="sleep-bar" style="width:0%;background:linear-gradient(90deg,#241434,#7b2d8b);"></div></div>
+      </div>
+    </div>
+
+    <!-- Today's reminders -->
+    <div class="section-title">Today's Reminders <a onclick="switchTab('meds')">See all</a></div>
+    <div class="reminder-list" id="reminder-list"></div>
+
+    <!-- Streak -->
+    <div class="streak-card" id="streak-card">
+      <div class="streak-flame">&#128293;</div>
+      <div class="streak-info">
+        <div class="streak-num" id="streak-num">1</div>
+        <div class="streak-label">Day streak &mdash; Keep it up!</div>
+      </div>
+      <div style="font-size:0.72rem;opacity:0.8;text-align:right;">Best:<br><span id="streak-best">1</span> days</div>
+    </div>
+
+    <!-- Mood Tracker -->
+    <div class="mood-section">
+      <div class="section-title" style="margin-bottom:0;">How do you feel today?</div>
+      <div class="mood-emoji-row" id="mood-row">
+        <button class="mood-btn" onclick="selectMood('terrible','😩',this)" title="Terrible">&#128553;</button>
+        <button class="mood-btn" onclick="selectMood('bad','😕',this)" title="Bad">&#128533;</button>
+        <button class="mood-btn" onclick="selectMood('okay','😐',this)" title="Okay">&#128528;</button>
+        <button class="mood-btn" onclick="selectMood('good','😊',this)" title="Good">&#128522;</button>
+        <button class="mood-btn" onclick="selectMood('great','&#128526;',this)" title="Great">&#128526;</button>
+      </div>
+      <div style="text-align:center;font-size:0.72rem;color:var(--muted);" id="mood-label">Tap to log your mood</div>
+    </div>
+
+    <!-- Water quick add -->
+    <div class="section-title">Water Intake</div>
+    <div class="water-section" style="margin-bottom:20px;">
+      <div style="font-family:'Clash Display',sans-serif;font-size:1.2rem;margin-bottom:4px;">Daily Hydration</div>
+      <div style="font-size:0.78rem;opacity:0.7;margin-bottom:4px;" id="water-count-label">0 of 8 glasses</div>
+      <div class="water-drops" id="water-drops-home"></div>
+      <div style="font-size:0.72rem;opacity:0.6;">Tap a drop to log a glass 💧</div>
+    </div>
+  </div>
+
+  <!-- Medications -->
+  <div class="tab-panel" id="panel-meds">
+    <div style="padding-top:4px;"></div>
+    <div class="med-hero">
+      <div class="med-hero-title">💊 Medication Tracker</div>
+      <div class="med-hero-sub">Stay consistent with your daily doses</div>
+      <div class="med-progress-bar"><div class="med-progress-fill" id="med-progress-fill" style="width:0%"></div></div>
+      <div class="med-progress-label" id="med-progress-label">0 of 0 doses taken today</div>
+    </div>
+    <div class="section-title">Today's Medications</div>
+    <div class="med-list" id="med-list"></div>
+    <button class="add-med-btn" onclick="openAddMed()">＋ Add Medication</button>
+  </div>
+
+  <!-- Exercise -->
+  <div class="tab-panel" id="panel-exercise">
+    <div style="padding-top:4px;"></div>
+    <div class="exercise-hero">
+      <div class="exercise-hero-title">🔥 Exercise Plan</div>
+      <div class="exercise-hero-sub" id="exercise-hero-sub">Personalized for your profile</div>
+    </div>
+    <div class="section-title">Categories</div>
+    <div class="exercise-cats" id="exercise-cats">
+      <div class="ex-cat active" onclick="filterEx('all',this)">All</div>
+      <div class="ex-cat" onclick="filterEx('cardio',this)">Cardio</div>
+      <div class="ex-cat" onclick="filterEx('strength',this)">Strength</div>
+      <div class="ex-cat" onclick="filterEx('flexibility',this)">Flexibility</div>
+      <div class="ex-cat" onclick="filterEx('mindfulness',this)">Mindfulness</div>
+      <div class="ex-cat" onclick="filterEx('walking',this)">Walking</div>
+    </div>
+    <div class="exercise-grid" id="exercise-grid"></div>
+  </div>
+
+  <!-- Analysis -->
+  <div class="tab-panel" id="panel-analysis">
+    <div style="padding-top:4px;"></div>
+    <div class="analysis-hero">
+      <div style="font-family:'Clash Display',sans-serif;font-size:1.2rem;margin-bottom:4px;">📊 Health Analysis</div>
+      <div style="font-size:0.78rem;opacity:0.7;" id="analysis-summary">Your complete health picture</div>
+    </div>
+
+    <!-- BMI chart -->
+    <div class="chart-area">
+      <div class="chart-title">Body Metrics</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">Height</div>
+          <div style="font-family:'Clash Display',sans-serif;font-size:1.4rem;" id="an-height">-- cm</div>
+        </div>
+        <div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">Weight</div>
+          <div style="font-family:'Clash Display',sans-serif;font-size:1.4rem;" id="an-weight">-- kg</div>
+        </div>
+        <div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">BMI</div>
+          <div style="font-family:'Clash Display',sans-serif;font-size:1.4rem;" id="an-bmi">--</div>
+        </div>
+        <div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">Ideal Weight</div>
+          <div style="font-family:'Clash Display',sans-serif;font-size:1.4rem;" id="an-ideal">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly water -->
+    <div class="chart-area">
+      <div class="chart-title">Weekly Water Intake (Simulated)</div>
+      <div class="mini-bars" id="water-chart-bars"></div>
+    </div>
+
+    <!-- Insights -->
+    <div class="section-title">Health Insights</div>
+    <div class="insights-list" id="insights-list"></div>
+  </div>
+
+  <!-- Bottom nav -->
+  <div class="tab-nav">
+    <div class="tab-item active" onclick="switchTab('home')" id="tab-home">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">Home</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('meds')" id="tab-meds">
+      <span class="tab-icon">💊</span>
+      <span class="tab-label">Meds</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('exercise')" id="tab-exercise">
+      <span class="tab-icon">🏃</span>
+      <span class="tab-label">Exercise</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('analysis')" id="tab-analysis">
+      <span class="tab-icon">📊</span>
+      <span class="tab-label">Analysis</span>
+    </div>
+  </div>
+</div>
+
+<!-- Add Medication Modal -->
+<div class="modal-overlay" id="add-med-modal">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title-big">Add Medication 💊</div>
+    <div class="form-group">
+      <label class="form-label">Medication Name</label>
+      <input class="form-input" id="med-name-input" placeholder="e.g. Metformin 500mg">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Dosage</label>
+      <input class="form-input" id="med-dose-input" placeholder="e.g. 1 tablet">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Times per day</label>
+      <div class="option-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="option-card" style="padding:14px 8px;" onclick="selectMedFreq(1,this)"><div class="oc-label">1x</div></div>
+        <div class="option-card" style="padding:14px 8px;" onclick="selectMedFreq(2,this)"><div class="oc-label">2x</div></div>
+        <div class="option-card" style="padding:14px 8px;" onclick="selectMedFreq(3,this)"><div class="oc-label">3x</div></div>
+        <div class="option-card" style="padding:14px 8px;" onclick="selectMedFreq(4,this)"><div class="oc-label">4x</div></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Color</label>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div onclick="selectMedColor('#e9c46a',this)" style="width:36px;height:36px;border-radius:10px;background:#e9c46a;cursor:pointer;border:2px solid transparent;"></div>
+        <div onclick="selectMedColor('#f4845f',this)" style="width:36px;height:36px;border-radius:10px;background:#f4845f;cursor:pointer;border:2px solid transparent;"></div>
+        <div onclick="selectMedColor('#52b788',this)" style="width:36px;height:36px;border-radius:10px;background:#52b788;cursor:pointer;border:2px solid transparent;"></div>
+        <div onclick="selectMedColor('#74c0fc',this)" style="width:36px;height:36px;border-radius:10px;background:#74c0fc;cursor:pointer;border:2px solid transparent;"></div>
+        <div onclick="selectMedColor('#e879f9',this)" style="width:36px;height:36px;border-radius:10px;background:#e879f9;cursor:pointer;border:2px solid transparent;"></div>
+        <div onclick="selectMedColor('#a9d6e5',this)" style="width:36px;height:36px;border-radius:10px;background:#a9d6e5;cursor:pointer;border:2px solid transparent;"></div>
+      </div>
+    </div>
+    <button class="btn-auth" onclick="saveMedication()">Add Medication</button>
+    <button class="btn-back" style="width:100%;text-align:center;margin-top:8px;" onclick="closeModal('add-med-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- PROFILE SIDE PANEL -->
+<div class="profile-overlay" id="profile-overlay" onclick="closeProfilePanel()"></div>
+<div class="profile-panel" id="profile-panel">
+  <div class="profile-header">
+    <button class="profile-close" onclick="closeProfilePanel()">&#10005;</button>
+    <div class="profile-avatar-big" id="panel-avatar-big">A</div>
+    <div class="profile-name-big" id="panel-name-big">Alex Johnson</div>
+    <div class="profile-email-big" id="panel-email-big">user@example.com</div>
+    <div class="profile-badges">
+      <div class="profile-badge" id="panel-age-badge">28 yrs</div>
+      <div class="profile-badge" id="panel-activity-badge">Moderate</div>
+      <div class="profile-badge" id="panel-goal-badge">3 Goals</div>
+    </div>
+  </div>
+  <div class="profile-body">
+    <div class="profile-section-label">My Stats</div>
+    <div class="profile-stat-row">
+      <div class="profile-stat-mini">
+        <div class="profile-stat-mini-val" id="panel-bmi">--</div>
+        <div class="profile-stat-mini-lbl">BMI</div>
+      </div>
+      <div class="profile-stat-mini">
+        <div class="profile-stat-mini-val" id="panel-weight">--</div>
+        <div class="profile-stat-mini-lbl">kg</div>
+      </div>
+      <div class="profile-stat-mini">
+        <div class="profile-stat-mini-val" id="panel-sleep">--</div>
+        <div class="profile-stat-mini-lbl">hrs sleep</div>
+      </div>
+    </div>
+
+    <div class="profile-section-label">Features</div>
+    <div class="profile-row" onclick="openEditProfile()">
+      <div class="profile-row-icon" style="background:rgba(45,106,79,0.12)">&#9998;</div>
+      <div class="profile-row-text">
+        <div class="profile-row-title">Edit Profile</div>
+        <div class="profile-row-sub">Update your health info &amp; goals</div>
+      </div>
+      <div class="profile-row-arrow">&#8250;</div>
+    </div>
+    <div class="profile-row" onclick="openGoalSetter()">
+      <div class="profile-row-icon" style="background:rgba(244,132,95,0.12)">&#127919;</div>
+      <div class="profile-row-text">
+        <div class="profile-row-title">Goal Planner</div>
+        <div class="profile-row-sub">Set weekly targets</div>
+      </div>
+      <div class="profile-row-arrow">&#8250;</div>
+    </div>
+    <div class="profile-row" onclick="openHealthReport()">
+      <div class="profile-row-icon" style="background:rgba(123,45,139,0.12)">&#128203;</div>
+      <div class="profile-row-text">
+        <div class="profile-row-title">Health Report</div>
+        <div class="profile-row-sub">Your monthly summary</div>
+      </div>
+      <div class="profile-row-arrow">&#8250;</div>
+    </div>
+    <div class="profile-row" onclick="startReminders()">
+      <div class="profile-row-icon" style="background:rgba(69,123,157,0.12)">&#128276;</div>
+      <div class="profile-row-text">
+        <div class="profile-row-title">Enable Notifications</div>
+        <div class="profile-row-sub">Medication &amp; water alerts</div>
+      </div>
+      <div class="profile-row-arrow">&#8250;</div>
+    </div>
+
+    <div class="profile-section-label">Preferences</div>
+    <div class="profile-row">
+      <div class="profile-row-icon" style="background:rgba(233,196,106,0.15)">&#127769;</div>
+      <div class="profile-row-text">
+        <div class="profile-row-title">Dark Mode</div>
+        <div class="profile-row-sub">Toggle dark theme</div>
+      </div>
+      <button class="profile-row-toggle" id="dark-toggle" onclick="toggleDarkMode(this)"></button>
+    </div>
+    <div class="profile-row">
+      <div class="profile-row-icon" style="background:rgba(82,183,136,0.12)">&#128227;</div>
+      <div class="profile-row-text">
+        <div class="profile-row-title">Sound Alerts</div>
+        <div class="profile-row-sub">Notification sounds</div>
+      </div>
+      <button class="profile-row-toggle on" id="sound-toggle" onclick="this.classList.toggle('on')"></button>
+    </div>
+
+    <div class="profile-divider"></div>
+    <div class="profile-section-label">Account</div>
+    <div class="profile-row" onclick="switchAccountFlow()">
+      <div class="profile-row-icon" style="background:rgba(69,123,157,0.12)">&#128260;</div>
+      <div class="profile-row-text">
+        <div class="profile-row-title">Switch Account</div>
+        <div class="profile-row-sub">Login with another account</div>
+      </div>
+      <div class="profile-row-arrow">&#8250;</div>
+    </div>
+    <div class="profile-divider"></div>
+    <button class="btn-switch-account" onclick="switchAccountFlow()">&#128260; Login with Another Account</button>
+    <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    <div style="text-align:center;font-size:0.65rem;color:var(--muted);margin-top:16px;padding-bottom:16px;">Vitalis v2.0 &bull; Your health, your data</div>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal-overlay" id="edit-profile-modal">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title-big">Edit Profile</div>
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input class="form-input" id="edit-name" placeholder="Your name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Age</label>
+      <input class="form-input" type="number" id="edit-age" placeholder="25" min="10" max="100">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Weight (kg)</label>
+      <input class="form-input" type="number" id="edit-weight" placeholder="70">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Height (cm)</label>
+      <input class="form-input" type="number" id="edit-height" placeholder="170">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sleep Hours</label>
+      <input class="form-input" type="number" id="edit-sleep" placeholder="7" min="4" max="12">
+    </div>
+    <button class="btn-auth" onclick="saveEditProfile()">Save Changes</button>
+    <button class="btn-back" style="width:100%;text-align:center;margin-top:8px;" onclick="closeModal('edit-profile-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Goal Planner Modal -->
+<div class="modal-overlay" id="goal-planner-modal">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title-big">Weekly Goals</div>
+    <div class="form-group">
+      <label class="form-label">Water Goal (glasses/day)</label>
+      <input class="form-input" type="number" id="goal-water" placeholder="8" min="1" max="20">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Exercise Days per Week</label>
+      <input class="form-input" type="number" id="goal-exercise" placeholder="4" min="1" max="7">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Target Weight (kg)</label>
+      <input class="form-input" type="number" id="goal-target-weight" placeholder="65">
+    </div>
+    <button class="btn-auth" onclick="saveGoals()">Save Goals</button>
+    <button class="btn-back" style="width:100%;text-align:center;margin-top:8px;" onclick="closeModal('goal-planner-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Health Report Modal -->
+<div class="modal-overlay" id="health-report-modal">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title-big">Monthly Health Report</div>
+    <div id="health-report-content" style="font-size:0.85rem;color:var(--muted);line-height:1.7;"></div>
+    <button class="btn-back" style="width:100%;text-align:center;margin-top:16px;" onclick="closeModal('health-report-modal')">Close</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA & STATE
+// ═══════════════════════════════════════════════════════════
+let userData = {
+  name:'', email:'', age:25, height:170, weight:70,
+  activity:'moderate', goals:[], conditions:[],
+  sleep:7, waterGoal:8
+};
+let appState = {
+  waterToday: 0,
+  medications: [],
+  medTaken: {},
+  reminderDone: {}
+};
+
+// Load from storage
+function loadState(){
+  const u = localStorage.getItem('vitalis_user');
+  const a = localStorage.getItem('vitalis_state');
+  if(u) userData = {...userData,...JSON.parse(u)};
+  if(a) appState = {...appState,...JSON.parse(a)};
+}
+function saveState(){
+  localStorage.setItem('vitalis_user', JSON.stringify(userData));
+  localStorage.setItem('vitalis_state', JSON.stringify(appState));
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════
+function switchAuthTab(tab){
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',i===(tab==='login'?0:1)));
+  document.getElementById('auth-login').style.display = tab==='login'?'':'none';
+  document.getElementById('auth-signup').style.display = tab==='signup'?'':'none';
+}
+
+function doLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  if(!email||!pass){showToast('Please fill in all fields');return;}
+  const stored = localStorage.getItem('vitalis_user');
+  if(!stored){showToast('No account found. Create one first.');return;}
+  const u = JSON.parse(stored);
+  if(u.email!==email){showToast('Email not found');return;}
+  loadState();
+  if(u.onboarded) showApp();
+  else showScreen('screen-onboard');
+}
+
+function doSignup(){
+  const name  = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const pass  = document.getElementById('signup-password').value;
+  if(!name||!email||!pass){showToast('Please fill all fields');return;}
+  userData.name = name; userData.email = email;
+  saveState();
+  showScreen('screen-onboard');
+  initOnboard();
+}
+
+function demoLogin(){
+  userData = {
+    name:'Alex Johnson',email:'demo@vitalis.app',age:28,
+    height:175,weight:72,activity:'moderate',
+    goals:['lose_weight','more_energy','heart_health'],
+    conditions:['none'],sleep:7,waterGoal:8,onboarded:true
+  };
+  appState.medications = getDefaultMeds();
+  saveState(); showApp();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════════════════════════
+const TOTAL_STEPS = 7;
+function initOnboard(){
+  const prog = document.getElementById('onboard-progress');
+  prog.innerHTML='';
+  for(let i=1;i<=TOTAL_STEPS;i++){
+    const d=document.createElement('div');
+    d.className='progress-dot'+(i===1?' active':'');
+    d.id='prog-dot-'+i;
+    prog.appendChild(d);
+  }
+}
+
+function nextStep(to){
+  const current = document.querySelector('.onboard-step.active');
+  const next = document.getElementById('step-'+to);
+  if(!current||!next) return;
+  current.classList.remove('active');
+  next.classList.add('active');
+  for(let i=1;i<=TOTAL_STEPS;i++){
+    const d=document.getElementById('prog-dot-'+i);
+    if(!d)continue;
+    d.classList.toggle('active',i===to);
+    d.classList.toggle('done',i<to);
+  }
+}
+
+function selectOption(key,val,el){
+  userData[key]=val;
+  el.closest('.option-grid').querySelectorAll('.option-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleTag(key,val,el){
+  if(!userData[key]) userData[key]=[];
+  if(val==='none'){userData[key]=['none'];el.closest('.tag-grid').querySelectorAll('.tag-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');return;}
+  const idx=userData[key].indexOf('none');
+  if(idx>-1) userData[key].splice(idx,1);
+  el.closest('.tag-grid').querySelectorAll('.tag-btn').forEach(b=>{if(b.textContent.includes('None'))b.classList.remove('selected');});
+  if(el.classList.contains('selected')){el.classList.remove('selected');userData[key]=userData[key].filter(v=>v!==val);}
+  else{el.classList.add('selected');userData[key].push(val);}
+}
+
+function finishOnboarding(){
+  userData.onboarded=true;
+  appState.medications = getDefaultMeds();
+  saveState(); showApp();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+  const s=document.getElementById(id);
+  s.style.display='flex'; setTimeout(()=>s.classList.add('active'),10);
+}
+
+function showApp(){
+  showScreen('screen-app');
+  buildApp();
+  switchTab('home');
+  startReminders();
+  updateStreak();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function switchTab(tab){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab==='exercise') buildExercise();
+  if(tab==='analysis') buildAnalysis();
+  if(tab==='meds') buildMedList();
+}
+
+// ═══════════════════════════════════════════════════════════
+// BUILD APP
+// ═══════════════════════════════════════════════════════════
+function buildApp(){
+  // Greeting
+  const h=new Date().getHours();
+  const greet=h<12?'morning':h<17?'afternoon':'evening';
+  document.getElementById('greeting-time').textContent=greet;
+  document.getElementById('user-name-greeting').textContent=userData.name.split(' ')[0]||'Friend';
+  document.getElementById('user-avatar').textContent=(userData.name[0]||'A').toUpperCase();
+  const now=new Date();
+  document.getElementById('greeting-date').textContent=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+  calcHealthScore();
+  buildStats();
+  buildReminders();
+  // Restore saved mood
+  if(appState.todayMood){
+    const moodMap={terrible:0,bad:1,okay:2,good:3,great:4};
+    const idx=moodMap[appState.todayMood];
+    const btns=document.querySelectorAll('.mood-btn');
+    if(btns[idx]) btns[idx].classList.add('selected');
+    const labels={terrible:'Hang in there',bad:'Hope it gets better',okay:'Not bad!',good:'Great day!',great:'Awesome!'};
+    document.getElementById('mood-label').textContent=labels[appState.todayMood]||'Logged!';
+  }
+  buildWaterDrops();
+  buildMedList();
+}
+
+function calcHealthScore(){
+  let score=60;
+  const bmi=calcBMI();
+  if(bmi>=18.5&&bmi<=24.9) score+=15;
+  else if(bmi>=25&&bmi<=29.9) score+=5;
+  if(userData.activity==='active') score+=10;
+  else if(userData.activity==='moderate') score+=6;
+  else if(userData.activity==='light') score+=3;
+  if(userData.sleep>=7&&userData.sleep<=9) score+=8;
+  else if(userData.sleep>=6) score+=4;
+  if(userData.conditions&&userData.conditions.includes('none')) score+=7;
+  score=Math.min(99,Math.max(40,score));
+  userData.healthScore=score;
+
+  const el=document.getElementById('health-score-num');
+  const ring=document.getElementById('health-ring');
+  el.textContent=score;
+  const circumference=283;
+  const offset=circumference-(score/100)*circumference;
+  setTimeout(()=>ring.style.strokeDashoffset=offset,300);
+
+  let level,desc,color;
+  if(score>=80){level='🟢 Excellent';desc='Your health indicators are great! Keep up the consistency.';color='#52b788';}
+  else if(score>=65){level='🟡 Good';desc='Solid foundation. A few improvements can take you to excellent.';color='#e9c46a';}
+  else if(score>=50){level='🟠 Fair';desc='Room for improvement. Follow your exercise and nutrition plan.';color='#f4845f';}
+  else{level='🔴 Needs Attention';desc='Let\'s work on building healthier habits together, one step at a time.';color='#ef4444';}
+  document.getElementById('health-level-badge').innerHTML=level;
+  document.getElementById('health-hero-desc').textContent=desc;
+}
+
+function calcBMI(){
+  const h=userData.height/100;
+  return parseFloat((userData.weight/(h*h)).toFixed(1));
+}
+
+function buildStats(){
+  const bmi=calcBMI();
+  document.getElementById('bmi-val').innerHTML=bmi+'<span class="stat-unit"></span>';
+  let bmiLabel,bmiPct;
+  if(bmi<18.5){bmiLabel='Underweight';bmiPct=25;}
+  else if(bmi<25){bmiLabel='Normal ✓';bmiPct=70;}
+  else if(bmi<30){bmiLabel='Overweight';bmiPct=50;}
+  else{bmiLabel='Obese';bmiPct=30;}
+  document.getElementById('bmi-label').textContent=bmiLabel;
+  document.getElementById('bmi-bar').style.width=bmiPct+'%';
+
+  // Water
+  const wg=userData.waterGoal||8;
+  const wt=appState.waterToday||0;
+  document.getElementById('water-stat-val').innerHTML=wt+'<span class="stat-unit"> / '+wg+' gl</span>';
+  document.getElementById('water-stat-sub').textContent=wt>=wg?'Goal reached! 🎉':'Keep drinking!';
+  document.getElementById('water-bar').style.width=Math.min(100,(wt/wg)*100)+'%';
+
+  // Meds
+  const totalDoses=appState.medications.reduce((s,m)=>s+(m.freq||1),0);
+  const takenCount=Object.values(appState.medTaken).filter(Boolean).length;
+  document.getElementById('med-stat-val').innerHTML=takenCount+'<span class="stat-unit"> taken</span>';
+  document.getElementById('med-stat-sub').textContent='of '+totalDoses+' doses today';
+  document.getElementById('med-bar').style.width=totalDoses>0?Math.min(100,(takenCount/totalDoses)*100)+'%':'0%';
+
+  // Sleep
+  document.getElementById('sleep-stat-val').innerHTML=userData.sleep+'<span class="stat-unit"> hrs</span>';
+  document.getElementById('sleep-stat-sub').textContent=userData.sleep>=7?'Well rested ✓':'Try for 7-9 hrs';
+  document.getElementById('sleep-bar').style.width=Math.min(100,(userData.sleep/9)*100)+'%';
+}
+
+function buildReminders(){
+  const container=document.getElementById('reminder-list');
+  container.innerHTML='';
+  const reminders=[
+    {id:'water_morning',icon:'💧',color:'#e8f4fd',name:'Drink Water',time:'Every 2 hours'},
+    ...appState.medications.slice(0,3).map((m,i)=>({id:'med_'+i,icon:'💊',color:`rgba(${hexToRgb(m.color)},0.15)`,name:m.name,time:getTimeLabel(m.freq,i)}))
+  ];
+  reminders.forEach(r=>{
+    const done=appState.reminderDone[r.id];
+    const div=document.createElement('div');
+    div.className='reminder-item';
+    div.innerHTML=`
+      <div class="reminder-icon-wrap" style="background:${r.color}">${r.icon}</div>
+      <div class="reminder-info">
+        <div class="reminder-name">${r.name}</div>
+        <div class="reminder-time">${r.time}</div>
+      </div>
+      <div class="reminder-status${done?' done':''}" onclick="toggleReminder('${r.id}',this)">${done?'✓':''}</div>`;
+    container.appendChild(div);
+  });
+}
+
+function toggleReminder(id,el){
+  appState.reminderDone[id]=!appState.reminderDone[id];
+  el.classList.toggle('done',appState.reminderDone[id]);
+  el.textContent=appState.reminderDone[id]?'✓':'';
+  saveState(); showToast(appState.reminderDone[id]?'✓ Marked complete!':'Unmarked');
+}
+
+function buildWaterDrops(){
+  const container=document.getElementById('water-drops-home');
+  container.innerHTML='';
+  const goal=userData.waterGoal||8;
+  for(let i=0;i<goal;i++){
+    const d=document.createElement('div');
+    d.className='water-drop'+(i<appState.waterToday?' filled':'');
+    d.textContent='💧';
+    d.onclick=()=>logWater(i);
+    container.appendChild(d);
+  }
+  document.getElementById('water-count-label').textContent=appState.waterToday+' of '+goal+' glasses';
+}
+
+function logWater(idx){
+  const newVal=idx+1;
+  if(appState.waterToday===newVal){appState.waterToday=idx;showToast('Removed a glass');}
+  else{appState.waterToday=newVal;showToast('💧 Glass logged!');}
+  saveState(); buildStats(); buildWaterDrops();
+}
+
+// ─── MEDICATIONS ────────────────────────────────────────────
+function buildMedList(){
+  const container=document.getElementById('med-list');
+  container.innerHTML='';
+  const total=appState.medications.reduce((s,m)=>s+(m.freq||1),0);
+  const taken=Object.values(appState.medTaken).filter(Boolean).length;
+  document.getElementById('med-progress-fill').style.width=total>0?(taken/total*100)+'%':'0%';
+  document.getElementById('med-progress-label').textContent=taken+' of '+total+' doses taken today';
+
+  appState.medications.forEach((med,mi)=>{
+    const card=document.createElement('div');
+    card.className='med-card';
+    const times=[];
+    for(let t=0;t<med.freq;t++){
+      const key='med_'+mi+'_t'+t;
+      const done=appState.medTaken[key];
+      times.push(`<span class="med-time-chip${done?' taken':''}" onclick="toggleMedDose('${key}',this)">${getTimeLabel(med.freq,t)}</span>`);
+    }
+    const allKey='med_'+mi;
+    const allDone=appState.medTaken[allKey];
+    card.innerHTML=`
+      <div class="med-pill-icon" style="background:rgba(${hexToRgb(med.color)},0.2)">${med.icon||'💊'}</div>
+      <div class="med-info">
+        <div class="med-name">${med.name}</div>
+        <div class="med-details">${med.dose} · ${med.freq}x daily</div>
+        <div class="med-times">${times.join('')}</div>
+      </div>
+      <div class="med-action${allDone?' taken':''}" onclick="toggleAllDoses(${mi},this)">${allDone?'✓':'○'}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function toggleMedDose(key,el){
+  appState.medTaken[key]=!appState.medTaken[key];
+  el.classList.toggle('taken',appState.medTaken[key]);
+  saveState(); buildStats(); buildMedList();
+  showToast(appState.medTaken[key]?'💊 Dose taken!':'Dose unmarked');
+}
+
+function toggleAllDoses(mi,el){
+  const med=appState.medications[mi];
+  const key='med_'+mi;
+  appState.medTaken[key]=!appState.medTaken[key];
+  for(let t=0;t<med.freq;t++) appState.medTaken['med_'+mi+'_t'+t]=appState.medTaken[key];
+  saveState(); buildStats(); buildMedList();
+  showToast(appState.medTaken[key]?'💊 All doses marked!':'Doses cleared');
+}
+
+let newMedData={freq:1,color:'#52b788'};
+function openAddMed(){document.getElementById('add-med-modal').classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function selectMedFreq(n,el){newMedData.freq=n;el.closest('.option-grid').querySelectorAll('.option-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+function selectMedColor(c,el){newMedData.color=c;el.parentElement.querySelectorAll('div').forEach(d=>d.style.borderColor='transparent');el.style.borderColor='var(--text)';}
+
+function saveMedication(){
+  const name=document.getElementById('med-name-input').value.trim();
+  const dose=document.getElementById('med-dose-input').value.trim();
+  if(!name){showToast('Please enter medication name');return;}
+  appState.medications.push({name,dose:dose||'1 tablet',freq:newMedData.freq,color:newMedData.color,icon:'💊'});
+  saveState(); buildMedList(); closeModal('add-med-modal');
+  document.getElementById('med-name-input').value='';
+  document.getElementById('med-dose-input').value='';
+  showToast('✓ Medication added!');
+}
+
+// ─── EXERCISE ───────────────────────────────────────────────
+const ALL_EXERCISES=[
+  {name:'Brisk Walking',type:'cardio',emoji:'🚶',duration:'30 min',calories:'150 kcal',tags:['Low Impact','Cardio'],intensity:'low',conditions:[]},
+  {name:'Morning Run',type:'cardio',emoji:'🏃',duration:'20 min',calories:'220 kcal',tags:['Cardio','Endurance'],intensity:'med',conditions:['asthma']},
+  {name:'Yoga Flow',type:'flexibility',emoji:'🧘',duration:'40 min',calories:'120 kcal',tags:['Flexibility','Mindfulness'],intensity:'low',conditions:[]},
+  {name:'Bodyweight HIIT',type:'strength',emoji:'⚡',duration:'25 min',calories:'300 kcal',tags:['Strength','Fat Burn'],intensity:'high',conditions:['heart','hypertension']},
+  {name:'Cycling',type:'cardio',emoji:'🚴',duration:'35 min',calories:'280 kcal',tags:['Cardio','Low Impact'],intensity:'med',conditions:[]},
+  {name:'Stretching',type:'flexibility',emoji:'🤸',duration:'20 min',calories:'60 kcal',tags:['Flexibility','Recovery'],intensity:'low',conditions:[]},
+  {name:'Swimming',type:'cardio',emoji:'🏊',duration:'30 min',calories:'250 kcal',tags:['Full Body','Low Impact'],intensity:'med',conditions:[]},
+  {name:'Meditation',type:'mindfulness',emoji:'🧠',duration:'15 min',calories:'20 kcal',tags:['Mental Health','Relaxation'],intensity:'low',conditions:[]},
+  {name:'Dumbbell Workout',type:'strength',emoji:'🏋️',duration:'45 min',calories:'320 kcal',tags:['Strength','Muscle'],intensity:'high',conditions:['heart','back_pain']},
+  {name:'Dance Cardio',type:'cardio',emoji:'💃',duration:'30 min',calories:'240 kcal',tags:['Fun','Cardio'],intensity:'med',conditions:[]},
+  {name:'Nature Walk',type:'walking',emoji:'🌿',duration:'45 min',calories:'180 kcal',tags:['Walking','Mindful'],intensity:'low',conditions:[]},
+  {name:'Pilates',type:'flexibility',emoji:'🩺',duration:'40 min',calories:'140 kcal',tags:['Core','Flexibility'],intensity:'low',conditions:[]},
+];
+
+let exFilter='all';
+function filterEx(cat,el){
+  exFilter=cat;
+  document.querySelectorAll('.ex-cat').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  buildExercise();
+}
+
+function buildExercise(){
+  const conditions=userData.conditions||[];
+  const activity=userData.activity||'moderate';
+  document.getElementById('exercise-hero-sub').textContent=`Tailored for ${activity} fitness level`;
+
+  const filtered=ALL_EXERCISES.filter(ex=>{
+    if(exFilter!=='all'&&ex.type!==exFilter) return false;
+    // Filter out exercises not suitable for conditions
+    if(conditions.some(c=>ex.conditions.includes(c))) return false;
+    return true;
+  });
+
+  const grid=document.getElementById('exercise-grid');
+  grid.innerHTML='';
+  filtered.forEach(ex=>{
+    const card=document.createElement('div');
+    card.className='ex-card';
+    card.setAttribute('data-emoji',ex.emoji);
+    const tagsHtml=ex.tags.map(t=>`<span class="ex-tag intensity-${ex.intensity}">${t}</span>`).join('');
+    card.innerHTML=`
+      <div class="ex-card-type">${ex.type}</div>
+      <div class="ex-card-name">${ex.name}</div>
+      <div class="ex-card-meta">${ex.duration} · ${ex.calories}</div>
+      <div class="ex-card-tags">${tagsHtml}</div>`;
+    card.onclick=()=>showToast('🏃 '+ex.name+' added to today!');
+    grid.appendChild(card);
+  });
+}
+
+// ─── ANALYSIS ───────────────────────────────────────────────
+function buildAnalysis(){
+  const bmi=calcBMI();
+  const h=userData.height,w=userData.weight;
+  const idealMin=Math.round(18.5*(h/100)**2);
+  const idealMax=Math.round(24.9*(h/100)**2);
+  document.getElementById('an-height').textContent=h+' cm';
+  document.getElementById('an-weight').textContent=w+' kg';
+  document.getElementById('an-bmi').textContent=bmi;
+  document.getElementById('an-ideal').textContent=idealMin+'–'+idealMax+' kg';
+  document.getElementById('analysis-summary').textContent=`Age ${userData.age} · ${userData.activity} lifestyle`;
+
+  // Weekly water chart
+  const bars=document.getElementById('water-chart-bars');
+  bars.innerHTML='';
+  const days=['M','T','W','T','F','S','S'];
+  const vals=days.map((_,i)=>i===6?appState.waterToday:Math.floor(Math.random()*userData.waterGoal*0.4+userData.waterGoal*0.4));
+  const max=Math.max(...vals)||1;
+  days.forEach((d,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='mini-bar-wrap';
+    const bar=document.createElement('div');
+    bar.className='mini-bar';
+    bar.style.height='0px';
+    const label=document.createElement('div');
+    label.className='mini-bar-label';
+    label.textContent=d;
+    wrap.appendChild(bar); wrap.appendChild(label);
+    bars.appendChild(wrap);
+    setTimeout(()=>bar.style.height=Math.max(4,(vals[i]/max)*72)+'px',100+i*60);
+  });
+
+  // Insights
+  const insights=generateInsights(bmi);
+  const list=document.getElementById('insights-list');
+  list.innerHTML='';
+  insights.forEach(ins=>{
+    const card=document.createElement('div');
+    card.className='insight-card';
+    card.innerHTML=`
+      <div class="insight-icon" style="background:${ins.bg}">${ins.icon}</div>
+      <div>
+        <div class="insight-title">${ins.title}</div>
+        <div class="insight-desc">${ins.desc}</div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function generateInsights(bmi){
+  const ins=[];
+  if(bmi<18.5) ins.push({icon:'⚠️',bg:'rgba(233,196,106,0.15)',title:'Underweight',desc:'Consider increasing caloric intake with nutrient-dense foods. Consult a dietitian for a tailored plan.'});
+  else if(bmi<=24.9) ins.push({icon:'✅',bg:'rgba(82,183,136,0.15)',title:'Healthy BMI',desc:'Your BMI is in the optimal range. Maintain this with regular exercise and balanced nutrition.'});
+  else if(bmi<=29.9) ins.push({icon:'📊',bg:'rgba(244,132,95,0.15)',title:'Overweight',desc:'Combine 150 mins of moderate cardio per week with a slight caloric deficit to reach your goal weight.'});
+  else ins.push({icon:'🏥',bg:'rgba(239,68,68,0.1)',title:'High BMI',desc:'Please consult a healthcare professional. Small, consistent changes in diet and activity can make a big difference.'});
+
+  if(userData.sleep<6) ins.push({icon:'😴',bg:'rgba(123,45,139,0.12)',title:'Sleep Deficit',desc:'You\'re getting under 6 hours. Poor sleep increases stress, hunger, and raises heart disease risk.'});
+  else if(userData.sleep>=7) ins.push({icon:'🌙',bg:'rgba(123,45,139,0.12)',title:'Good Sleep Habits',desc:'7+ hours is ideal. Good sleep supports metabolism, immunity, and mental health.'});
+
+  if(userData.activity==='sedentary') ins.push({icon:'🚶',bg:'rgba(69,123,157,0.12)',title:'Increase Activity',desc:'Even 20 mins of walking per day can reduce cardiovascular risk by 30%. Start with short walks.'});
+  else ins.push({icon:'💪',bg:'rgba(82,183,136,0.12)',title:'Active Lifestyle',desc:'Great job staying active! Vary your workouts to prevent plateaus and reduce injury risk.'});
+
+  if(appState.waterToday<userData.waterGoal) ins.push({icon:'💧',bg:'rgba(26,107,154,0.12)',title:'Hydrate More',desc:'You\'re below your water goal today. Dehydration affects focus, energy, and kidney health.'});
+
+  if(userData.conditions&&!userData.conditions.includes('none')&&userData.conditions.length>0)
+    ins.push({icon:'🏥',bg:'rgba(244,132,95,0.1)',title:'Condition Management',desc:'For your noted conditions, track symptoms regularly and consult your physician about exercise restrictions.'});
+
+  return ins.slice(0,5);
+}
+
+// ─── REMINDERS ──────────────────────────────────────────────
+function startReminders(){
+  if(!('Notification' in window)) return;
+  Notification.requestPermission();
+}
+
+// ─── HELPERS ────────────────────────────────────────────────
+function getDefaultMeds(){
+  return [
+    {name:'Vitamin D3',dose:'1 tablet',freq:1,color:'#e9c46a',icon:'🟡'},
+    {name:'Omega-3',dose:'2 capsules',freq:2,color:'#74c0fc',icon:'🔵'},
+  ];
+}
+
+function getTimeLabel(freq,idx){
+  const labels={1:['Morning'],2:['Morning','Evening'],3:['Morning','Afternoon','Night'],4:['6 AM','12 PM','6 PM','10 PM']};
+  return (labels[freq]||['Morning'])[idx]||'Morning';
+}
+
+function hexToRgb(hex){
+  if(!hex) return '82,183,136';
+  const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return r?`${parseInt(r[1],16)},${parseInt(r[2],16)},${parseInt(r[3],16)}`:'82,183,136';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ─── PROFILE PANEL ──────────────────────────────────────────
+function openProfilePanel(){
+  updateProfilePanel();
+  document.getElementById('profile-overlay').classList.add('open');
+  document.getElementById('profile-panel').classList.add('open');
+}
+function closeProfilePanel(){
+  document.getElementById('profile-overlay').classList.remove('open');
+  document.getElementById('profile-panel').classList.remove('open');
+}
+function updateProfilePanel(){
+  const initials=(userData.name||'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('panel-avatar-big').textContent=initials;
+  document.getElementById('panel-name-big').textContent=userData.name||'User';
+  document.getElementById('panel-email-big').textContent=userData.email||'';
+  document.getElementById('panel-age-badge').textContent=(userData.age||'--')+' yrs';
+  document.getElementById('panel-activity-badge').textContent=(userData.activity||'moderate');
+  document.getElementById('panel-goal-badge').textContent=(userData.goals||[]).length+' Goals';
+  document.getElementById('panel-bmi').textContent=calcBMI();
+  document.getElementById('panel-weight').textContent=userData.weight||'--';
+  document.getElementById('panel-sleep').textContent=userData.sleep||'--';
+}
+
+function doLogout(){
+  if(!confirm('Sign out of Vitalis?')) return;
+  localStorage.clear();
+  userData={name:'',email:'',age:25,height:170,weight:70,activity:'moderate',goals:[],conditions:[],sleep:7,waterGoal:8};
+  appState={waterToday:0,medications:[],medTaken:{},reminderDone:{}};
+  closeProfilePanel();
+  showScreen('screen-auth');
+  showToast('Signed out successfully');
+}
+
+function switchAccountFlow(){
+  if(!confirm('Login with another account? Your current session will be saved.')) return;
+  closeProfilePanel();
+  // Reset current session but keep data saved
+  showScreen('screen-auth');
+  document.getElementById('login-email').value='';
+  document.getElementById('login-password').value='';
+  showToast('Sign in with another account');
+}
+
+function openEditProfile(){
+  document.getElementById('edit-name').value=userData.name||'';
+  document.getElementById('edit-age').value=userData.age||25;
+  document.getElementById('edit-weight').value=userData.weight||70;
+  document.getElementById('edit-height').value=userData.height||170;
+  document.getElementById('edit-sleep').value=userData.sleep||7;
+  closeProfilePanel();
+  document.getElementById('edit-profile-modal').classList.add('open');
+}
+function saveEditProfile(){
+  const name=document.getElementById('edit-name').value.trim();
+  const age=parseInt(document.getElementById('edit-age').value)||userData.age;
+  const weight=parseInt(document.getElementById('edit-weight').value)||userData.weight;
+  const height=parseInt(document.getElementById('edit-height').value)||userData.height;
+  const sleep=parseInt(document.getElementById('edit-sleep').value)||userData.sleep;
+  if(name) userData.name=name;
+  userData.age=age; userData.weight=weight; userData.height=height; userData.sleep=sleep;
+  saveState(); buildStats(); closeModal('edit-profile-modal');
+  document.getElementById('user-avatar').textContent=(userData.name||'U')[0].toUpperCase();
+  showToast('Profile updated!');
+}
+
+function openGoalSetter(){
+  document.getElementById('goal-water').value=userData.waterGoal||8;
+  document.getElementById('goal-exercise').value=userData.exerciseDays||4;
+  document.getElementById('goal-target-weight').value=userData.targetWeight||userData.weight||70;
+  closeProfilePanel();
+  document.getElementById('goal-planner-modal').classList.add('open');
+}
+function saveGoals(){
+  userData.waterGoal=parseInt(document.getElementById('goal-water').value)||8;
+  userData.exerciseDays=parseInt(document.getElementById('goal-exercise').value)||4;
+  userData.targetWeight=parseInt(document.getElementById('goal-target-weight').value)||userData.weight;
+  saveState(); buildStats(); closeModal('goal-planner-modal');
+  showToast('Goals saved!');
+}
+
+function openHealthReport(){
+  const bmi=calcBMI();
+  const content=document.getElementById('health-report-content');
+  content.innerHTML=`
+    <div style="background:var(--pill);border-radius:12px;padding:14px;margin-bottom:12px;">
+      <strong>February 2026 Summary</strong><br>
+      BMI: <strong>${bmi}</strong> &bull; Weight: <strong>${userData.weight} kg</strong> &bull; Sleep avg: <strong>${userData.sleep} hrs</strong>
+    </div>
+    <div style="margin-bottom:12px;"><strong>Water Intake</strong><br>You logged water on most days this month. Daily average near your goal of ${userData.waterGoal} glasses.</div>
+    <div style="margin-bottom:12px;"><strong>Medications</strong><br>${appState.medications.length} medications tracked. Stay consistent with your doses for best results.</div>
+    <div style="margin-bottom:12px;"><strong>Activity</strong><br>Profile set to <em>${userData.activity}</em> activity level. ${userData.activity==='sedentary'?'Consider adding short walks to your day.':'Great job staying active!'}</div>
+    <div style="color:var(--accent);font-weight:600;">Keep up the great work! &#127881;</div>`;
+  closeProfilePanel();
+  document.getElementById('health-report-modal').classList.add('open');
+}
+
+function toggleDarkMode(btn){
+  btn.classList.toggle('on');
+  showToast(btn.classList.contains('on')?'Dark mode coming soon!':'Light mode active');
+}
+
+// ─── MOOD TRACKER ────────────────────────────────────────────
+function selectMood(mood, emoji, el){
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  appState.todayMood=mood;
+  saveState();
+  const labels={terrible:'Hang in there 💙',bad:'Hope it gets better',okay:'Not bad!',good:'Great day!',great:'Awesome! Keep shining!'};
+  document.getElementById('mood-label').textContent=labels[mood]||'Logged!';
+  showToast('Mood logged: '+mood);
+}
+
+// ─── STREAK ──────────────────────────────────────────────────
+function updateStreak(){
+  const today=new Date().toDateString();
+  if(!appState.lastActiveDay){ appState.lastActiveDay=today; appState.streak=1; appState.bestStreak=1; }
+  else if(appState.lastActiveDay!==today){
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    if(appState.lastActiveDay===yesterday){ appState.streak=(appState.streak||0)+1; }
+    else { appState.streak=1; }
+    appState.lastActiveDay=today;
+    appState.bestStreak=Math.max(appState.streak,appState.bestStreak||1);
+  }
+  saveState();
+  document.getElementById('streak-num').textContent=appState.streak||1;
+  document.getElementById('streak-best').textContent=appState.bestStreak||1;
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+loadState();
+if(userData.onboarded) showApp();
+else if(userData.email) {showScreen('screen-onboard');initOnboard();}
+else showScreen('screen-auth');
+</script>
+</body>
+</html>
